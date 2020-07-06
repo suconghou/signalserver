@@ -1,0 +1,23 @@
+name: okteto
+
+on:
+  push:
+    branches:
+      - master
+  schedule:
+    - cron: 0 21 * * *
+  watch:
+    types: started
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+      - name: Build and Deploy
+        run: |
+        cd /home/runner
+        wget -O /usr/local/bin/kubectl https://storage.googleapis.com/kubernetes-release/release/v1.18.0/bin/linux/amd64/kubectl
+        sudo chmod +x /usr/local/bin/kubectl
+        ls -lh
+        kubectl version

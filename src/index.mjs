@@ -20,7 +20,7 @@ wss.on('connection', (ws, { url }) => {
     ws.on('pong', heartbeat);
     ws.on('message', (message) => {
         try {
-            const data = JSON.stringify(message);
+            const data = JSON.parse(message);
             if (data.to) {
                 broadcastIf(message, (ws) => ws.uid == data.to);
             } else {
