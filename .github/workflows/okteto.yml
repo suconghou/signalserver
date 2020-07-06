@@ -14,10 +14,15 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v1
+      - name: Install build dependencies
+        run: |
+          sudo apt-get -y update
+          sudo apt-get -y install wget
       - name: Build and Deploy
         run: |
-          cd /home/runner
-          wget -O /usr/local/bin/kubectl https://storage.googleapis.com/kubernetes-release/release/v1.18.0/bin/linux/amd64/kubectl
+          pwd 
+          ls -lh
+          sudo wget -O /usr/local/bin/kubectl https://storage.googleapis.com/kubernetes-release/release/v1.18.0/bin/linux/amd64/kubectl
           sudo chmod +x /usr/local/bin/kubectl
           ls -lh
           kubectl version
