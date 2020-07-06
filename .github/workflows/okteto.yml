@@ -22,5 +22,5 @@ jobs:
           ls -lh
           sudo wget -O /usr/local/bin/kubectl https://storage.googleapis.com/kubernetes-release/release/v1.18.0/bin/linux/amd64/kubectl
           sudo chmod +x /usr/local/bin/kubectl
-          mkdir -p ~/.kube && echo $KUBE_CONFIG > ~/.kube/config
+          mkdir -p ~/.kube && echo $KUBE_CONFIG | base64 -d > ~/.kube/config
           kubectl version
