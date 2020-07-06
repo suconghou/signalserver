@@ -21,10 +21,14 @@ wss.on('connection', (ws, { url }) => {
     ws.on('message', (message) => {
         try {
             const data = JSON.parse(message);
-            if (data.to) {
-                broadcastIf(message, (ws) => ws.uid == data.to);
+            if (typeof data == 'object' && data) {
+                if (data.to) {
+                    broadcastIf(message, (ws) => ws.uid == data.to);
+                } else {
+                    console.error("invalid format", data)
+                }
             } else {
-                console.error('invalid msg', data);
+                console.error('invalid msg', message);
             }
         } catch (e) {
             console.error(e);
