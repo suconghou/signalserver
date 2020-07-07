@@ -1,4 +1,4 @@
-import * as process from 'process';
+import process from 'process';
 import WebSocket from 'ws';
 
 const port = process.env.PORT || 5000;
