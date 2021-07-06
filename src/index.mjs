@@ -36,7 +36,7 @@ wss.on('connection', (ws, { url }) => {
     });
     const ids = [];
     wss.clients.forEach((ws) => {
-        if (ws.uid !== uid) {
+        if (ws.readyState === WebSocket.OPEN && ws.uid !== uid) {
             ids.push(ws.uid);
         }
     });
@@ -46,7 +46,7 @@ wss.on('connection', (ws, { url }) => {
 
 const broadcastIf = (data, fn) => {
     wss.clients.forEach((ws) => {
-        fn(ws) && ws.send(data);
+        ws.readyState === WebSocket.OPEN && fn(ws) && ws.send(data);
     });
 };
 
