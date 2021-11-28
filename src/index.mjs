@@ -1,5 +1,5 @@
 import process from 'process';
-import WebSocket from 'ws';
+import WebSocket, { WebSocketServer } from 'ws';
 
 const port = process.env.PORT || 5000;
 
@@ -7,7 +7,7 @@ function heartbeat() {
     this.isAlive = true;
 }
 
-const wss = new WebSocket.Server({ port });
+const wss = new WebSocketServer({ port });
 
 wss.on('connection', (ws, { url }) => {
     const info = /uid\/([\w-]{36})$/.exec(url);
@@ -18,14 +18,14 @@ wss.on('connection', (ws, { url }) => {
     ws.uid = uid;
     ws.isAlive = true;
     ws.on('pong', heartbeat);
-    ws.on('message', (message) => {
+    ws.on('message', (message, isBinary) => {
         try {
             const data = JSON.parse(message);
             if (typeof data == 'object' && data) {
                 if (data.to) {
-                    broadcastIf(message, (ws) => ws.uid == data.to);
+                    broadcastIf(message, (ws) => ws.uid == data.to, isBinary);
                 } else {
-                    console.error("invalid format", data)
+                    console.error('invalid format', data);
                 }
             } else {
                 console.error('invalid msg', message);
@@ -44,9 +44,9 @@ wss.on('connection', (ws, { url }) => {
     broadcastIf(JSON.stringify({ event: 'online', id: uid }), (ws) => ws.uid != uid);
 });
 
-const broadcastIf = (data, fn) => {
+const broadcastIf = (data, fn, isBinary) => {
     wss.clients.forEach((ws) => {
-        ws.readyState === WebSocket.OPEN && fn(ws) && ws.send(data);
+        ws.readyState === WebSocket.OPEN && fn(ws) && ws.send(data, { binary: isBinary });
     });
 };
 
